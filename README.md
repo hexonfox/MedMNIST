@@ -1,6 +1,7 @@
 # PathMNIST
 Solving PathMNIST with ResNet
 
+### Create env and download dataset 
 ```python
 # Create conda env
 conda create -y -n pathmnist python=3.9 && conda activate pathmnist
@@ -22,4 +23,9 @@ cp $CONDA_PREFIX/lib/libdevice.10.bc $CONDA_PREFIX/lib/nvvm/libdevice/
 
 # Download pathmnist dataset
 wget -O pathmnist.npz https://zenodo.org/record/6496656/files/pathmnist.npz?download=1
+```
+
+### Run
+```
+python train.py
 ```
