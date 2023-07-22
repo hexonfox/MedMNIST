@@ -75,7 +75,7 @@ if __name__ == "__main__":
         write_steps_per_second=True,
     )
     early_stopping = tf.keras.callbacks.EarlyStopping(
-        monitor='val_acc',
+        monitor='val_accuracy',
         patience=0,
         verbose=1,
         mode='max',
