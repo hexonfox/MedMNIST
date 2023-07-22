@@ -74,12 +74,12 @@ if __name__ == "__main__":
         write_images=True,
         write_steps_per_second=True,
     )
-    early_stopping = tf.keras.callbacks.EarlyStopping(
-        monitor='val_accuracy',
-        patience=20,
-        verbose=1,
-        mode='max',
-    )
+    # early_stopping = tf.keras.callbacks.EarlyStopping(
+    #     monitor='val_accuracy',
+    #     patience=30,
+    #     verbose=1,
+    #     mode='max',
+    # )
     checkpoint = tf.keras.callbacks.ModelCheckpoint(
         os.path.join(os.getcwd(), 'best_acc.h5'),
         monitor='val_accuracy',
@@ -94,7 +94,7 @@ if __name__ == "__main__":
         batch_size=128,
         epochs=100,
         verbose=1,
-        callbacks=[lr_scheduler, tensorboard, early_stopping, checkpoint],
+        callbacks=[lr_scheduler, tensorboard, checkpoint],
         validation_data=(dataset['val_images']/255.0, dataset['val_labels']),
         shuffle=True,
     )
