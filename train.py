@@ -108,4 +108,4 @@ if __name__ == "__main__":
         batch_size=128,
         verbose=1,
     )
-    print(f"Test loss: {score[0]} | Test acc: {score[1]}")
+    print(f"Test loss: {score[0]} - Test acc: {score[1]}")
