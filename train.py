@@ -62,6 +62,11 @@ if __name__ == "__main__":
     loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     model.compile(optimizer=optim, loss=loss, metrics=['accuracy'])
     model.summary()
+
+    # train model
+    lr_scheduler = tf.keras.callbacks.LearningRateScheduler(
+        lambda epoch, lr: lr*0.1 if epoch == 50 or epoch == 75 else lr
+    )
     tensorboard = tf.keras.callbacks.TensorBoard(
         log_dir=os.path.join(os.getcwd(), 'logs'),
         histogram_freq=1,
@@ -90,9 +95,11 @@ if __name__ == "__main__":
         batch_size=128,
         epochs=100,
         verbose=1,
-        callbacks=[tensorboard, early_stopping, checkpoint],
+        callbacks=[lr_scheduler, tensorboard, early_stopping, checkpoint],
         validation_data=(dataset['val_images']/255.0, dataset['val_labels']),
         shuffle=True,
     )
+
+    # eval model
     # score = model.evaluate()
     # print(f"Test loss: {score[0]} | Test acc: {score[1]}")
