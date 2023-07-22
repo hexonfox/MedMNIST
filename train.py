@@ -93,7 +93,7 @@ if __name__ == "__main__":
         dataset['train_labels'],
         batch_size=128,
         epochs=100,
-        verbose=2,
+        verbose=1,
         callbacks=[lr_scheduler, tensorboard, early_stopping, checkpoint],
         validation_data=(dataset['val_images']/255.0, dataset['val_labels']),
         shuffle=True,
