@@ -86,12 +86,12 @@ if __name__ == "__main__":
     )
     model.fit(
         dataset['train_images']/255.0,
-        dataset['train_labels']/255.0,
+        dataset['train_labels'],
         batch_size=128,
         epochs=100,
         verbose=1,
         callbacks=[tensorboard, early_stopping, checkpoint],
-        validation_data=(dataset['val_images'], dataset['val_labels']),
+        validation_data=(dataset['val_images']/255.0, dataset['val_labels']),
         shuffle=True,
     )
     # score = model.evaluate()
