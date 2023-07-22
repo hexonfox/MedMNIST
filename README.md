@@ -21,5 +21,5 @@ mkdir -p $CONDA_PREFIX/lib/nvvm/libdevice
 cp $CONDA_PREFIX/lib/libdevice.10.bc $CONDA_PREFIX/lib/nvvm/libdevice/
 
 # Download pathmnist dataset
-wget https://zenodo.org/record/6496656/files/pathmnist.npz?download=1
+wget -O pathmnist.npz https://zenodo.org/record/6496656/files/pathmnist.npz?download=1
 ```
