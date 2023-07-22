@@ -76,7 +76,7 @@ if __name__ == "__main__":
     )
     early_stopping = tf.keras.callbacks.EarlyStopping(
         monitor='val_accuracy',
-        patience=0,
+        patience=20,
         verbose=1,
         mode='max',
         baseline=0.907,
