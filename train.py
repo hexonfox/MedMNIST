@@ -100,6 +100,12 @@ if __name__ == "__main__":
         shuffle=True,
     )
 
-    # eval model
-    # score = model.evaluate()
-    # print(f"Test loss: {score[0]} | Test acc: {score[1]}")
+    # load and eval best model
+    model = tf.keras.models.load_model('best_acc.h5')
+    score = model.evaluate(
+        dataset['test_images']/255.0,
+        dataset['test_labels'],
+        batch_size=128,
+        verbose=1,
+    )
+    print(f"Test loss: {score[0]} | Test acc: {score[1]}")
