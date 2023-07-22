@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import tensorflow as tf
 
@@ -52,10 +53,8 @@ def resnet20(shape_in, classes):
 
 if __name__ == "__main__":
     # load dataset
+    # dataset keys = 'train_images', 'val_images', 'test_images', 'train_labels', 'val_labels', 'test_labels'
     dataset = np.load('pathmnist.npz')
-    keys = list(dataset.keys())
-    for key in keys:
-        print(key, dataset[key].shape)
     
     # compile model
     model = resnet20((28,28,3), 9)
@@ -63,4 +62,37 @@ if __name__ == "__main__":
     loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     model.compile(optimizer=optim, loss=loss, metrics=['accuracy'])
     model.summary()
-    
+    tensorboard = tf.keras.callbacks.TensorBoard(
+        log_dir=os.path.join(os.getcwd(), 'logs'),
+        histogram_freq=1,
+        write_graph=True,
+        write_images=True,
+        write_steps_per_second=True,
+    )
+    early_stopping = tf.keras.callbacks.EarlyStopping(
+        monitor='val_acc',
+        patience=0,
+        verbose='1',
+        mode='max',
+        baseline=0.907,
+    )
+    checkpoint = tf.keras.callbacks.ModelCheckpoint(
+        os.path.join(os.getcwd(), 'best_acc.h5'),
+        monitor='val_acc',
+        verbose=1,
+        save_best_only=True,
+        save_weights_only=False,
+        mode='max',
+    )
+    model.fit(
+        dataset['train_images']/255.0,
+        dataset['train_labels']/255.0,
+        batch_size=128,
+        epochs=100,
+        verbose=1,
+        callbacks=[tensorboard, early_stopping, checkpoint],
+        validation_data=(dataset['val_images'], dataset['val_labels']),
+        shuffle=True,
+    )
+    # score = model.evaluate()
+    # print(f"Test loss: {score[0]} | Test acc: {score[1]}")
