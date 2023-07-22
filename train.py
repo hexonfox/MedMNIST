@@ -75,7 +75,7 @@ if __name__ == "__main__":
         write_steps_per_second=True,
     )
     early_stopping = tf.keras.callbacks.EarlyStopping(
-        monitor='val_acc',
+        monitor='val_accuracy',
         patience=0,
         verbose='1',
         mode='max',
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     )
     checkpoint = tf.keras.callbacks.ModelCheckpoint(
         os.path.join(os.getcwd(), 'best_acc.h5'),
-        monitor='val_acc',
+        monitor='val_accuracy',
         verbose=1,
         save_best_only=True,
         save_weights_only=False,
