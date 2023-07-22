@@ -26,7 +26,6 @@ def residual_block(x, filters, projection):
     return x
 
 # configured for resnet-20
-# only left first conv and max pool
 def resnet20(shape_in, classes):
     # input and initial convolution
     x_in = tf.keras.layers.Input(shape_in)
