@@ -1,8 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-# configured for resnet-20
-def residual_block(x, filters, projection=False):
+def residual_block(x, filters, projection):
     x_skip = x 
 
     # layer 1
@@ -22,6 +21,19 @@ def residual_block(x, filters, projection=False):
         x_skip = tf.keras.layers.Conv2D(filters, (1, 1), (2,2), padding='valid')(x_skip)
     x = tf.keras.layers.Add()([x, x_skip])
     x = tf.keras.layers.Activation('relu')(x)
+
+    return x
+
+# configured for resnet-20
+def residual_stack(x):
+    filters = [16, 32, 64]
+
+    for i in range(3):
+        for j in range(3):
+            if i > 0 and j == 0:
+                x = residual_block(x, filters[i], projection=True)
+            else:
+                x = residual_block(x, filters[i], projection=False)
 
     return x
 
