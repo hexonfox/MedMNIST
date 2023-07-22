@@ -16,7 +16,7 @@ def residual_block(x, filters, projection=False):
     x = tf.keras.layers.BatchNormalization(axis=3)(x)
 
     if projection:
-        x_skip = tf.keras.layers.Conv2D(filters, (1, 1), (2,2))(x_skip)
+        x_skip = tf.keras.layers.Conv2D(filters, (1, 1), (2,2), padding='valid')(x_skip)
 
     x = tf.keras.layers.Add()([x, x_skip])
     x = tf.keras.layers.Activation('relu')(x)
