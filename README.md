@@ -26,6 +26,10 @@ wget -O pathmnist.npz https://zenodo.org/record/6496656/files/pathmnist.npz?down
 ```
 
 ### Run
-```
+```bash
+# train
 python train.py
+
+# view training
+tensorboard --logdir=logs
 ```
