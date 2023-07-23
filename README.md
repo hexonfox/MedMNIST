@@ -1,10 +1,10 @@
-# PathMNIST
-Solving PathMNIST with ResNet
+# MedMNIST
+Solving MedMNIST with ResNet-20, VGG-16 and ConvNet
 
 ### Create env and download dataset 
 ```python
 # Create conda env
-conda create -y -n pathmnist python=3.9 && conda activate pathmnist
+conda create -y -n medmnist python=3.9 && conda activate medmnist
 
 # Install tensorflow, cuda and cudnn
 conda install -y -c conda-forge cudatoolkit=11.8.0
@@ -24,15 +24,17 @@ cp $CONDA_PREFIX/lib/libdevice.10.bc $CONDA_PREFIX/lib/nvvm/libdevice/
 # Additional packages
 pip install pillow
 
-# Download pathmnist dataset
-wget -O pathmnist.npz https://zenodo.org/record/6496656/files/pathmnist.npz?download=1
+# Download medmnist datasets
+wget -O pathmnist.npz "https://zenodo.org/record/6496656/files/pathmnist.npz?download=1"
+wget -O octmnist.npz "https://zenodo.org/record/6496656/files/octmnist.npz?download=1"
+wget -O tissuemnist.npz "https://zenodo.org/record/6496656/files/tissuemnist.npz?download=1"
 ```
 
 ### Run
 ```bash
 # train
 # model options: resnet20 vgg16 convnet
-# dataset options: pathmnist
+# dataset options: pathmnist octmnist tissuemnist
 # will try to run on gpu by default
 # specify gpu index if there is a gpu preference 
 python train.py --gpu 0 --model resnet20 --dataset pathmnist
