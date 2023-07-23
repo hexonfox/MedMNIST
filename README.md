@@ -28,7 +28,11 @@ wget -O pathmnist.npz https://zenodo.org/record/6496656/files/pathmnist.npz?down
 ### Run
 ```bash
 # train
-python train.py
+# model options: resnet20 vgg16 convnet
+# dataset options: pathmnist
+# will try to run on gpu by default
+# specify gpu index if there is a gpu preference 
+python train.py --gpu 0 --model resnet20 --dataset pathmnist
 
 # view training
 tensorboard --logdir=logs
