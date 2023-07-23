@@ -1,4 +1,5 @@
 import os
+import argparse
 import numpy as np
 import tensorflow as tf
 
@@ -52,12 +53,27 @@ def resnet20(shape_in, classes):
     return model
 
 if __name__ == "__main__":
+    # parse args
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model', type=str, help='Specify model to use', choices=['vgg16', 'resnet20', 'convnet'], required=True)
+    parser.add_argument('--dataset', type=str, help='Specify medmnist dataset to use', choices=['pathmnist'], required=True)
+    parser.add_argument('--gpu', type=int, help='Specify gpu index to use', required=False)
+    args = parser.parse_args()
+
+    # set gpu index if specified 
+    if args.gpu is not None:
+        os.environ['CUDA_VISIBLE_DEVICES'] = f'{args.gpu}'
+
     # load dataset
-    # dataset keys = 'train_images', 'val_images', 'test_images', 'train_labels', 'val_labels', 'test_labels'
-    dataset = np.load('pathmnist.npz')
+    dataset = np.load(f'{args.dataset}.npz')
     
     # compile model
-    model = resnet20((28,28,3), 9)
+    if args.model == 'resnet20': 
+        model = resnet20((28,28,3), 9)
+    elif args.model == 'vgg16': 
+        pass 
+    elif args.model == 'convnet': 
+        pass
     optim = tf.keras.optimizers.Adam(lr=0.001)
     loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     model.compile(optimizer=optim, loss=loss, metrics=['accuracy'])
@@ -68,20 +84,10 @@ if __name__ == "__main__":
         lambda epoch, lr: lr*0.1 if epoch == 50 or epoch == 75 else lr
     )
     tensorboard = tf.keras.callbacks.TensorBoard(
-        log_dir=os.path.join(os.getcwd(), 'logs'),
-        histogram_freq=1,
-        write_graph=True,
-        write_images=True,
-        write_steps_per_second=True,
+        log_dir=os.path.join(os.getcwd(), 'logs', f'{args.dataset}_{args.model}'),
     )
-    # early_stopping = tf.keras.callbacks.EarlyStopping(
-    #     monitor='val_accuracy',
-    #     patience=30,
-    #     verbose=1,
-    #     mode='max',
-    # )
     checkpoint = tf.keras.callbacks.ModelCheckpoint(
-        os.path.join(os.getcwd(), 'best_acc.h5'),
+        os.path.join(os.getcwd(), 'models', f'model_{args.dataset}_{args.model}.h5'),
         monitor='val_accuracy',
         verbose=1,
         save_best_only=True,
@@ -94,13 +100,15 @@ if __name__ == "__main__":
         batch_size=128,
         epochs=100,
         verbose=1,
-        callbacks=[lr_scheduler, tensorboard, checkpoint],
+        callbacks=[lr_scheduler, checkpoint, tensorboard],
         validation_data=(dataset['val_images']/255.0, dataset['val_labels']),
         shuffle=True,
     )
 
     # load and eval best model
-    model = tf.keras.models.load_model('best_acc.h5')
+    model = tf.keras.models.load_model(
+        os.path.join(os.getcwd(), 'models', f'model_{args.dataset}_{args.model}.h5')
+    )
     score = model.evaluate(
         dataset['test_images']/255.0,
         dataset['test_labels'],
@@ -108,3 +116,4 @@ if __name__ == "__main__":
         verbose=1,
     )
     print(f"Test loss: {score[0]} - Test acc: {score[1]}")
+    np.save(os.path.join(os.getcwd(), 'logs', f'{args.dataset}_{args.model}', 'score.npy'), score)
