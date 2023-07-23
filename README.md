@@ -22,7 +22,7 @@ mkdir -p $CONDA_PREFIX/lib/nvvm/libdevice
 cp $CONDA_PREFIX/lib/libdevice.10.bc $CONDA_PREFIX/lib/nvvm/libdevice/
 
 # Additional packages
-pip install pillow
+pip install pillow pandas
 
 # Download medmnist datasets
 wget -O pathmnist.npz "https://zenodo.org/record/6496656/files/pathmnist.npz?download=1"
