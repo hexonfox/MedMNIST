@@ -21,6 +21,9 @@ source $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
 mkdir -p $CONDA_PREFIX/lib/nvvm/libdevice
 cp $CONDA_PREFIX/lib/libdevice.10.bc $CONDA_PREFIX/lib/nvvm/libdevice/
 
+# Additional packages
+pip install pillow
+
 # Download pathmnist dataset
 wget -O pathmnist.npz https://zenodo.org/record/6496656/files/pathmnist.npz?download=1
 ```
