@@ -74,10 +74,20 @@ if __name__ == "__main__":
         model = tf.keras.applications.VGG16(
             include_top=True,
             weights=None,
-            input_tensor=tf.keras.layers.Input((28,28,3)),
+            input_tensor=tf.keras.layers.Input((32,32,3)),
             classes=9,
             classifier_activation=None,
         )
+        dataset = dict(dataset)
+        for i in ['train_images', 'val_images', 'test_images']:
+            dataset[i] = np.asarray([
+                tf.keras.preprocessing.image.img_to_array(
+                    tf.keras.preprocessing.image.array_to_img(
+                        image, scale=True
+                    ).resize((32,32))
+                ) for image in dataset[i] 
+            ])
+            dataset[i] = tf.keras.applications.vgg16.preprocess_input(dataset[i])
     elif args.model == 'convnet': 
         pass
     optim = tf.keras.optimizers.Adam(lr=0.001)
