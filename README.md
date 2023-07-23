@@ -41,4 +41,7 @@ python train.py --gpu 0 --model resnet20 --dataset pathmnist
 
 # view training
 tensorboard --logdir=logs
+
+# print result summary after training all datasets and models
+python print_scores.py
 ```
