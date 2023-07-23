@@ -75,26 +75,27 @@ if __name__ == "__main__":
     if args.model == 'resnet20': 
         model = resnet20((28,28,3), 9)
     elif args.model == 'vgg16': 
-        model = tf.keras.applications.VGG16(
-            include_top=True,
-            weights=None,
-            input_tensor=tf.keras.layers.Input((32,32,3)),
-            classes=9,
-            classifier_activation=None,
-        )
-
-        # resize dataset as keras vgg16 min size is 32
-        # preprocess dataset as required by keras vgg16
-        dataset = dict(dataset)
-        for i in ['train_images', 'val_images', 'test_images']:
-            dataset[i] = np.asarray([
-                tf.keras.preprocessing.image.img_to_array(
-                    tf.keras.preprocessing.image.array_to_img(
-                        image, scale=True
-                    ).resize((32,32))
-                ) for image in dataset[i] 
-            ])
-            dataset[i] = tf.keras.applications.vgg16.preprocess_input(dataset[i])
+        model = tf.keras.Sequential()
+        model.add(tf.keras.layers.Input((28,28,3)))
+        for idx, filter in enumerate([64, 128, 256, 512, 512]):
+            model.add(tf.keras.layers.Conv2D(filter, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'))
+            model.add(tf.keras.layers.BatchNormalization())
+            model.add(tf.keras.layers.Dropout(0.25))
+            if idx > 1:
+                model.add(tf.keras.layers.Conv2D(filter, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'))
+                model.add(tf.keras.layers.BatchNormalization())
+                model.add(tf.keras.layers.Dropout(0.25))
+            model.add(tf.keras.layers.Conv2D(filter, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'))
+            model.add(tf.keras.layers.BatchNormalization())
+            if idx < 4:
+                model.add(tf.keras.layers.MaxPool2D((2,2),(2,2)))
+            else:
+                model.add(tf.keras.layers.Dropout(0.25))
+        model.add(tf.keras.layers.Flatten())
+        model.add(tf.keras.layers.Dense(512, activation='relu', kernel_initializer='he_normal'))
+        model.add(tf.keras.layers.BatchNormalization())
+        model.add(tf.keras.layers.Dropout(0.25))
+        model.add(tf.keras.layers.Dense(9, activation=None, kernel_initializer='he_normal'))
     elif args.model == 'convnet': 
         model = tf.keras.Sequential([
             tf.keras.layers.Input((28,28,3)),
