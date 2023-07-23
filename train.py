@@ -99,23 +99,24 @@ if __name__ == "__main__":
         model = tf.keras.Sequential([
             tf.keras.layers.Input((28,28,3)),
              
-            tf.keras.layers.Conv2D(64, (3,3), (1,1), padding='valid', kernel_initializer='he_normal', activation='relu'),
-            tf.keras.layers.Conv2D(64, (3,3), (1,1), padding='valid', kernel_initializer='he_normal', activation='relu'),
+            tf.keras.layers.Conv2D(32, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'),
+            tf.keras.layers.Conv2D(32, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'),
             tf.keras.layers.MaxPool2D(pool_size=(2,2)),
             tf.keras.layers.Dropout(0.25),
 
-            tf.keras.layers.Conv2D(128, (3,3), (1,1), padding='valid', kernel_initializer='he_normal', activation='relu'),
-            tf.keras.layers.Conv2D(128, (3,3), (1,1), padding='valid', kernel_initializer='he_normal', activation='relu'),
+            tf.keras.layers.Conv2D(64, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'),
+            tf.keras.layers.Conv2D(64, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'),
             tf.keras.layers.MaxPool2D(pool_size=(2,2)),
             tf.keras.layers.Dropout(0.25),
 
-            tf.keras.layers.Conv2D(256, (3,3), (1,1), padding='valid', kernel_initializer='he_normal', activation='relu'),
-            tf.keras.layers.Conv2D(256, (3,3), (1,1), padding='valid', kernel_initializer='he_normal', activation='relu'),
+            tf.keras.layers.Conv2D(128, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'),
+            tf.keras.layers.Conv2D(128, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'),
             tf.keras.layers.MaxPool2D(pool_size=(2,2)),
             tf.keras.layers.Dropout(0.25),
 
             tf.keras.layers.Flatten(),
-            tf.keras.layers.Dense(512, kernel_initializer='he_normal', activation='relu'),
+            tf.keras.layers.Dense(128, kernel_initializer='he_normal', activation='relu'),
+            tf.keras.layers.Dropout(0.25),
             tf.keras.layers.Dense(9, kernel_initializer='he_normal', activation=None),
         ])
     optim = tf.keras.optimizers.Adam(lr=0.001)
