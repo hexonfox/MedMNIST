@@ -71,7 +71,13 @@ if __name__ == "__main__":
     if args.model == 'resnet20': 
         model = resnet20((28,28,3), 9)
     elif args.model == 'vgg16': 
-        pass 
+        model = tf.keras.applications.VGG16(
+            include_top=True,
+            weights=None,
+            input_tensor=tf.keras.layers.Input((28,28,3)),
+            classes=9,
+            classifier_activation=None,
+        )
     elif args.model == 'convnet': 
         pass
     optim = tf.keras.optimizers.Adam(lr=0.001)
