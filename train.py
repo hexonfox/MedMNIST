@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # parse args
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', type=str, help='Specify model to use', choices=['vgg16', 'resnet20', 'convnet'], required=True)
-    parser.add_argument('--dataset', type=str, help='Specify medmnist dataset to use', choices=['pathmnist'], required=True)
+    parser.add_argument('--dataset', type=str, help='Specify medmnist dataset to use', choices=['pathmnist', 'octmnist', 'tissuemnist'], required=True)
     parser.add_argument('--gpu', type=int, help='Specify gpu index to use', required=False)
     args = parser.parse_args()
 
@@ -70,13 +70,32 @@ if __name__ == "__main__":
 
     # load dataset
     dataset = np.load(f'{args.dataset}.npz')
+    dataset = dict(dataset)
+
+    # add axis if greyscale
+    # define input_shape
+    if len(dataset['train_images'].shape) == 3:
+        input_shape = (28, 28, 1)
+        dataset['train_images'] = dataset['train_images'][..., np.newaxis]
+        dataset['val_images'] = dataset['val_images'][..., np.newaxis]
+        dataset['test_images'] = dataset['test_images'][..., np.newaxis]
+    else:
+        input_shape = (28, 28, 3)
+
+    # define classes
+    if args.dataset == 'pathmnist':
+        classes = 9
+    elif args.dataset == 'octmnist':
+        classes = 4
+    elif args.dataset == 'tissuemnist':
+        classes = 8
     
     # compile model
     if args.model == 'resnet20': 
-        model = resnet20((28,28,3), 9)
+        model = resnet20(input_shape, classes)
     elif args.model == 'vgg16': 
         model = tf.keras.Sequential()
-        model.add(tf.keras.layers.Input((28,28,3)))
+        model.add(tf.keras.layers.Input(input_shape))
         for idx, filter in enumerate([64, 128, 256, 512, 512]):
             model.add(tf.keras.layers.Conv2D(filter, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'))
             model.add(tf.keras.layers.BatchNormalization())
@@ -95,10 +114,10 @@ if __name__ == "__main__":
         model.add(tf.keras.layers.Dense(512, activation='relu', kernel_initializer='he_normal'))
         model.add(tf.keras.layers.BatchNormalization())
         model.add(tf.keras.layers.Dropout(0.25))
-        model.add(tf.keras.layers.Dense(9, activation=None, kernel_initializer='he_normal'))
+        model.add(tf.keras.layers.Dense(classes, activation=None, kernel_initializer='he_normal'))
     elif args.model == 'convnet': 
         model = tf.keras.Sequential([
-            tf.keras.layers.Input((28,28,3)),
+            tf.keras.layers.Input(input_shape),
              
             tf.keras.layers.Conv2D(32, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'),
             tf.keras.layers.Conv2D(32, (3,3), (1,1), padding='same', kernel_initializer='he_normal', activation='relu'),
@@ -118,7 +137,7 @@ if __name__ == "__main__":
             tf.keras.layers.Dropout(0.25),
             tf.keras.layers.Dense(512, kernel_initializer='he_normal', activation='relu'),
             tf.keras.layers.Dropout(0.25),
-            tf.keras.layers.Dense(9, kernel_initializer='he_normal', activation=None),
+            tf.keras.layers.Dense(classes, kernel_initializer='he_normal', activation=None),
         ])
     optim = tf.keras.optimizers.Adam(lr=0.001)
     loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
