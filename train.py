@@ -63,6 +63,10 @@ if __name__ == "__main__":
     # set gpu index if specified 
     if args.gpu is not None:
         os.environ['CUDA_VISIBLE_DEVICES'] = f'{args.gpu}'
+    
+    # create model dir if not yet created
+    if not os.path.exists(os.path.join(os.getcwd(), 'models')):
+        os.makedirs(os.path.join(os.getcwd(), 'models'))
 
     # load dataset
     dataset = np.load(f'{args.dataset}.npz')
