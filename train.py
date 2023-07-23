@@ -78,6 +78,9 @@ if __name__ == "__main__":
             classes=9,
             classifier_activation=None,
         )
+
+        # resize dataset as keras vgg16 min size is 32
+        # preprocess dataset as required by keras vgg16
         dataset = dict(dataset)
         for i in ['train_images', 'val_images', 'test_images']:
             dataset[i] = np.asarray([
