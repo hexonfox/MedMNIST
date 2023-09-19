@@ -152,24 +152,25 @@ if __name__ == "__main__":
     tensorboard = tf.keras.callbacks.TensorBoard(
         log_dir=os.path.join(os.getcwd(), 'logs', f'{args.dataset}_{args.model}'),
     )
-    checkpoint = tf.keras.callbacks.ModelCheckpoint(
-        os.path.join(os.getcwd(), 'models', f'model_{args.dataset}_{args.model}.h5'),
-        monitor='val_accuracy',
-        verbose=1,
-        save_best_only=True,
-        save_weights_only=False,
-        mode='max',
-    )
+    # checkpoint = tf.keras.callbacks.ModelCheckpoint(
+    #     os.path.join(os.getcwd(), 'models', f'model_{args.dataset}_{args.model}.h5'),
+    #     monitor='val_accuracy',
+    #     verbose=1,
+    #     save_best_only=True,
+    #     save_weights_only=False,
+    #     mode='max',
+    # )
     model.fit(
         dataset['train_images']/255.0,
         dataset['train_labels'],
         batch_size=128,
         epochs=100,
         verbose=1,
-        callbacks=[lr_scheduler, checkpoint, tensorboard],
+        callbacks=[lr_scheduler, tensorboard],
         validation_data=(dataset['val_images']/255.0, dataset['val_labels']),
         shuffle=True,
     )
+    model.save(os.path.join(os.getcwd(), 'models', f'model_{args.dataset}_{args.model}.h5'))
 
     # load and eval best model
     model = tf.keras.models.load_model(

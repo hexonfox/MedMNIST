@@ -7,7 +7,7 @@ Solving MedMNIST with ResNet-20, VGG-16 and ConvNet
 conda create -y -n medmnist python=3.7 && conda activate medmnist
 
 # Install tensorflow, cuda and cudnn
-conda install -y tensorflow-gpu=1.15.0 keras=2.3.1
+conda install -y tensorflow-gpu=1.15.0 keras=2.3.1 h5py=2.8.0
 
 # Additional packages
 pip install pillow pandas
