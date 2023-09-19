@@ -63,6 +63,7 @@ if __name__ == "__main__":
     # set gpu index if specified 
     if args.gpu is not None:
         os.environ['CUDA_VISIBLE_DEVICES'] = f'{args.gpu}'
+        os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
     
     # create model dir if not yet created
     if not os.path.exists(os.path.join(os.getcwd(), 'models')):
